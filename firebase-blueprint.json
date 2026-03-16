@@ -1,0 +1,137 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and role information",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["admin", "client"] },
+        "displayName": { "type": "string" }
+      },
+      "required": ["email", "role"]
+    },
+    "Vehicle": {
+      "title": "Vehicle",
+      "description": "Vehicle inventory item",
+      "type": "object",
+      "properties": {
+        "make": { "type": "string" },
+        "model": { "type": "string" },
+        "year": { "type": "integer" },
+        "price": { "type": "number" },
+        "status": { "type": "string", "enum": ["AVAILABLE", "RENTED", "OWNED"] },
+        "imageUrl": { "type": "string", "format": "uri" }
+      },
+      "required": ["make", "model", "year", "price", "status"]
+    },
+    "Contract": {
+      "title": "Contract",
+      "description": "Rent-to-own agreement",
+      "type": "object",
+      "properties": {
+        "vehicleId": { "type": "string" },
+        "userId": { "type": "string" },
+        "totalPaid": { "type": "number" },
+        "totalBalance": { "type": "number" },
+        "status": { "type": "string", "enum": ["ACTIVE", "DELINQUENT", "DEFAULTED", "COMPLETED"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "paymentSchedule": {
+          "type": "object",
+          "properties": {
+            "frequency": { "type": "string", "enum": ["Weekly", "Bi-Weekly", "Monthly"] },
+            "installmentAmount": { "type": "number" },
+            "startDate": { "type": "string", "format": "date-time" },
+            "nextPaymentDate": { "type": "string", "format": "date-time" }
+          }
+        }
+      },
+      "required": ["vehicleId", "userId", "totalPaid", "totalBalance", "status"]
+    },
+    "Payment": {
+      "title": "Payment",
+      "description": "Payment transaction record",
+      "type": "object",
+      "properties": {
+        "contractId": { "type": "string" },
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "stripeId": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["contractId", "userId", "amount", "stripeId", "timestamp"]
+    },
+    "Certificate": {
+      "title": "Certificate",
+      "description": "Digital title certificate for completed contracts",
+      "type": "object",
+      "properties": {
+        "contractId": { "type": "string" },
+        "userId": { "type": "string" },
+        "certificateId": { "type": "string" },
+        "ownerName": { "type": "string" },
+        "issuedAt": { "type": "string", "format": "date-time" },
+        "vehicleDetails": { "type": "object" }
+      },
+      "required": ["contractId", "userId", "certificateId", "ownerName", "issuedAt"]
+    },
+    "AuditLog": {
+      "title": "AuditLog",
+      "description": "System integrity check results",
+      "type": "object",
+      "properties": {
+        "timestamp": { "type": "string", "format": "date-time" },
+        "integrityScore": { "type": "number" },
+        "errors": { "type": "array", "items": { "type": "string" } },
+        "totalContracts": { "type": "number" },
+        "runBy": { "type": "string" }
+      },
+      "required": ["timestamp", "integrityScore", "errors", "totalContracts"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "Admin alerts for system events",
+      "type": "object",
+      "properties": {
+        "type": { "type": "string", "enum": ["PAYMENT_FAILED", "CONTRACT_DELINQUENT"] },
+        "contractId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "message": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "read": { "type": "boolean" }
+      },
+      "required": ["type", "contractId", "message", "timestamp", "read"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/vehicles/{vehicleId}": {
+      "schema": "Vehicle",
+      "description": "Vehicle inventory"
+    },
+    "/contracts/{contractId}": {
+      "schema": "Contract",
+      "description": "Active and past agreements"
+    },
+    "/payments/{paymentId}": {
+      "schema": "Payment",
+      "description": "Transaction history"
+    },
+    "/certificates/{certificateId}": {
+      "schema": "Certificate",
+      "description": "Issued digital titles"
+    },
+    "/reconciliation_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "System health logs"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Admin alerts"
+    }
+  }
+}

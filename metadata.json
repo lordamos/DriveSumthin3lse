@@ -1,0 +1,5 @@
+{
+  "name": "Drive Home - Rent-to-Own",
+  "description": "A high-integrity vehicle rent-to-own platform with built-in financial reconciliation and phased growth.",
+  "requestFramePermissions": ["geolocation"]
+}
